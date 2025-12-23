@@ -1,5 +1,6 @@
 package traffic;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -14,14 +15,14 @@ public class Main {
           System.out.print("Error! Incorrect Input. Try again: ");
           userInput = keyboard.nextLine();
       }
-      int numRoads = Integer.parseInt(keyboard.nextLine());
+      int numRoads = Integer.parseInt(userInput);
       System.out.print("Input the interval: ");
       userInput = keyboard.nextLine();
       while (notAPositiveNumber(userInput)) {
           System.out.println("Error! Incorrect Input. Try again: ");
           userInput = keyboard.nextLine();
       }
-      int interval = Integer.parseInt(keyboard.nextLine());
+      int interval = Integer.parseInt(userInput);
       int userChoice = -1;
 
       while (userChoice != 0) {
@@ -33,7 +34,7 @@ public class Main {
               System.out.println("Road deleted");
           } else if (userChoice == 3) {
               System.out.println("System opened");
-          } else {
+          } else if (userChoice != 0){
               System.out.println("Incorrect option");
           }
       }
@@ -52,9 +53,21 @@ public class Main {
     public static boolean notAPositiveNumber(String str) {
         try {
             int num = Integer.parseInt(str);
-            return num > 0;
+            return num <= 0;
         } catch (Exception e) {
-            return false;
+            return true;
+        }
+    }
+
+    public static void clearScreen() {
+        try {
+            var clearCommand = System.getProperty("os.name").contains("Windows")
+                    ? new ProcessBuilder("cmd", "/c", "cls")
+                    : new ProcessBuilder("clear");
+            clearCommand.inheritIO().start().waitFor();
+        }
+        catch (IOException | InterruptedException e) {
+            System.out.println("Exception in clearScreen() method");
         }
     }
 }

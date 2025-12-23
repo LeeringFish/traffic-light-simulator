@@ -2,6 +2,10 @@ package traffic;
 
 public class TrafficManager {
 
+    public TrafficManager() {
+
+    }
+
     public static void printMenu() {
         System.out.println("Menu:");
         System.out.println("1. Add road");
