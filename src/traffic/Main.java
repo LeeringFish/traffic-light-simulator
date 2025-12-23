@@ -19,27 +19,40 @@ public class Main {
       System.out.print("Input the interval: ");
       userInput = keyboard.nextLine();
       while (notAPositiveNumber(userInput)) {
-          System.out.println("Error! Incorrect Input. Try again: ");
+          System.out.print("Error! Incorrect Input. Try again: ");
           userInput = keyboard.nextLine();
       }
       int interval = Integer.parseInt(userInput);
       int userChoice = -1;
+      clearScreen();
 
-      while (userChoice != 0) {
+      while (true) {
           printMenu();
-          userChoice = Integer.parseInt(keyboard.nextLine());
+          userInput = keyboard.nextLine();
+          if (notAPositiveNumber(userInput) && !"0".equals(userInput)) {
+              userChoice = -1;
+          } else {
+              userChoice = Integer.parseInt(userInput);
+          }
+
           if (userChoice == 1) {
               System.out.println("Road added");
           } else if (userChoice == 2) {
               System.out.println("Road deleted");
           } else if (userChoice == 3) {
               System.out.println("System opened");
-          } else if (userChoice != 0){
+          } else if (userChoice == 0) {
+              System.out.println("Bye!");
+              break;
+          } else {
               System.out.println("Incorrect option");
           }
+
+          keyboard.nextLine();
+          clearScreen();
       }
 
-      System.out.println("Bye!");
+
   }
 
   public static void printMenu() {
