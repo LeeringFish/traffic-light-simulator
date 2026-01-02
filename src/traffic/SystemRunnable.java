@@ -5,6 +5,7 @@ import java.io.IOException;
 public class SystemRunnable implements Runnable {
     private int seconds;
     private boolean inSystemState;
+    private boolean isInterrupted;
     private int numRoads;
     private int interval;
 
@@ -13,11 +14,12 @@ public class SystemRunnable implements Runnable {
         this.interval = interval;
         this.seconds = 0;
         this.inSystemState = false;
+        this.isInterrupted = false;
     }
 
     @Override
     public void run() {
-        while (true) {
+        while (!isInterrupted) {
             try {
                 Thread.sleep(1000);
                 seconds++;
@@ -43,6 +45,10 @@ public class SystemRunnable implements Runnable {
 
     public void exitSystemState() {
         inSystemState = false;
+    }
+
+    public void sendInterrupt() {
+        isInterrupted = true;
     }
 
     public static void clearScreen() {

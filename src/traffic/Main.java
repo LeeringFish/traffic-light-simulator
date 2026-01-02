@@ -52,7 +52,9 @@ public class Main {
                     break;
                 }
               }
+              continue;
           } else if (userChoice == 0) {
+              r.sendInterrupt();
               System.out.println("Bye!");
               break;
           } else {
