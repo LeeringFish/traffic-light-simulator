@@ -26,6 +26,11 @@ public class Main {
       int userChoice = -1;
       clearScreen();
 
+      SystemRunnable r = new SystemRunnable(numRoads, interval);
+      Thread t = new Thread(r);
+      t.setName("QueueThread");
+      t.start();
+
       while (true) {
           printMenu();
           userInput = keyboard.nextLine();
@@ -40,7 +45,13 @@ public class Main {
           } else if (userChoice == 2) {
               System.out.println("Road deleted");
           } else if (userChoice == 3) {
-              System.out.println("System opened");
+              r.enterSystemState();
+              while (true) {
+                if (keyboard.nextLine().isEmpty()) {
+                    r.exitSystemState();
+                    break;
+                }
+              }
           } else if (userChoice == 0) {
               System.out.println("Bye!");
               break;
