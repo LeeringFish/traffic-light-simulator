@@ -26,7 +26,8 @@ public class Main {
       int userChoice = -1;
       clearScreen();
 
-      SystemRunnable r = new SystemRunnable(numRoads, interval);
+      TrafficManager manager = new TrafficManager(numRoads, interval);
+      SystemRunnable r = new SystemRunnable(manager);
       Thread t = new Thread(r);
       t.setName("QueueThread");
       t.start();

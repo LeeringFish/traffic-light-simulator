@@ -6,15 +6,13 @@ public class SystemRunnable implements Runnable {
     private int seconds;
     private boolean inSystemState;
     private boolean isInterrupted;
-    private int numRoads;
-    private int interval;
+    private final TrafficManager manager;
 
-    public SystemRunnable(int numRoads, int interval) {
-        this.numRoads = numRoads;
-        this.interval = interval;
+    public SystemRunnable(TrafficManager manager) {
         this.seconds = 0;
         this.inSystemState = false;
         this.isInterrupted = false;
+        this.manager = manager;
     }
 
     @Override
@@ -27,15 +25,15 @@ public class SystemRunnable implements Runnable {
                     clearScreen();
                     printSystemInfo();
                 }
-            } catch (InterruptedException e) {};
+            } catch (InterruptedException ignored) {};
         }
 
     }
 
     public void printSystemInfo() {
         System.out.printf("! %ds. have passed since system startup !\n", seconds);
-        System.out.printf("! Number of roads: %d !\n", numRoads);
-        System.out.printf("! Interval: %d !\n", interval);
+        System.out.printf("! Number of roads: %d !\n", manager.getNumRoads());
+        System.out.printf("! Interval: %d !\n", manager.getInterval());
         System.out.println("! Press \"Enter\" to open menu !");
     }
 

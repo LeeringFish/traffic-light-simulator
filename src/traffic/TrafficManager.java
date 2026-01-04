@@ -1,9 +1,14 @@
 package traffic;
 
+import java.io.IOException;
+
 public class TrafficManager {
+    private int numRoads;
+    private int interval;
 
-    public TrafficManager() {
-
+    public TrafficManager(int numRoads, int interval) {
+        this.numRoads = numRoads;
+        this.interval = interval;
     }
 
     public static void printMenu() {
@@ -14,4 +19,23 @@ public class TrafficManager {
         System.out.println("0. Quit");
     }
 
+    public int getNumRoads() {
+        return numRoads;
+    }
+
+    public int getInterval() {
+        return interval;
+    }
+
+    public static void clearScreen() {
+        try {
+            var clearCommand = System.getProperty("os.name").contains("Windows")
+                    ? new ProcessBuilder("cmd", "/c", "cls")
+                    : new ProcessBuilder("clear");
+            clearCommand.inheritIO().start().waitFor();
+        }
+        catch (IOException | InterruptedException e) {
+            System.out.println("Exception in clearScreen() method");
+        }
+    }
 }
