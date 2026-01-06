@@ -1,12 +1,12 @@
 package traffic;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
   public static void main(String[] args){
       Scanner keyboard = new Scanner(System.in);
       String userInput;
+      int numRoads, interval, userChoice;
 
       System.out.println("Welcome to the traffic management system!");
       System.out.print("Input the number of roads: ");
@@ -15,25 +15,24 @@ public class Main {
           System.out.print("Error! Incorrect Input. Try again: ");
           userInput = keyboard.nextLine();
       }
-      int numRoads = Integer.parseInt(userInput);
+      numRoads = Integer.parseInt(userInput);
       System.out.print("Input the interval: ");
       userInput = keyboard.nextLine();
       while (notAPositiveNumber(userInput)) {
           System.out.print("Error! Incorrect Input. Try again: ");
           userInput = keyboard.nextLine();
       }
-      int interval = Integer.parseInt(userInput);
-      int userChoice = -1;
-      clearScreen();
+      interval = Integer.parseInt(userInput);
+      TrafficManager.clearScreen();
 
       TrafficManager manager = new TrafficManager(numRoads, interval);
       SystemRunnable r = new SystemRunnable(manager);
       Thread t = new Thread(r);
       t.setName("QueueThread");
-      t.start();
+      //t.start();
 
       while (true) {
-          printMenu();
+          TrafficManager.printMenu();
           userInput = keyboard.nextLine();
           if (notAPositiveNumber(userInput) && !"0".equals(userInput)) {
               userChoice = -1;
@@ -42,10 +41,33 @@ public class Main {
           }
 
           if (userChoice == 1) {
-              System.out.println("Road added");
+              System.out.print("Input road name: ");
+              userInput = keyboard.nextLine();
+              if (manager.queueIsFull()) {
+                  System.out.println("queue is full");
+              } else {
+                  if (manager.queueIsEmpty()) {
+                      Road road = new Road(userInput, interval);
+                      road.openRoad();
+                      manager.addRoad(road);
+                  } else {
+                      int timeRemaining = manager.getCurrentRemainingTime() + interval * (manager.getCurrentNumRoads() - 1);
+                      manager.addRoad(new Road(userInput, timeRemaining));
+                  }
+
+                  System.out.println(userInput + " Added!");
+              }
           } else if (userChoice == 2) {
-              System.out.println("Road deleted");
+              if (manager.queueIsEmpty()) {
+                  System.out.println("queue is empty");
+              } else {
+                  String deleted = manager.deleteRoad().getName();
+                  System.out.println(deleted + " Deleted!");
+              }
           } else if (userChoice == 3) {
+              if (!t.isAlive()) {
+                  t.start();
+              }
               r.enterSystemState();
               while (true) {
                 if (keyboard.nextLine().isEmpty()) {
@@ -55,7 +77,7 @@ public class Main {
               }
               continue;
           } else if (userChoice == 0) {
-              r.sendInterrupt();
+              t.interrupt();
               System.out.println("Bye!");
               break;
           } else {
@@ -63,19 +85,11 @@ public class Main {
           }
 
           keyboard.nextLine();
-          clearScreen();
+          TrafficManager.clearScreen();
       }
 
-
   }
 
-  public static void printMenu() {
-      System.out.println("Menu:");
-      System.out.println("1. Add road");
-      System.out.println("2. Delete road");
-      System.out.println("3. Open system");
-      System.out.println("0. Quit");
-  }
 
     public static boolean notAPositiveNumber(String str) {
         try {
@@ -86,15 +100,4 @@ public class Main {
         }
     }
 
-    public static void clearScreen() {
-        try {
-            var clearCommand = System.getProperty("os.name").contains("Windows")
-                    ? new ProcessBuilder("cmd", "/c", "cls")
-                    : new ProcessBuilder("clear");
-            clearCommand.inheritIO().start().waitFor();
-        }
-        catch (IOException | InterruptedException e) {
-            System.out.println("Exception in clearScreen() method");
-        }
-    }
 }
